@@ -7,6 +7,13 @@ public class PostInMemoryRepository : IPostRepository
 {
     private readonly List<Post> posts = new List<Post>();
 
+    public PostInMemoryRepository()
+    {
+        posts.Add(new Post { Id = 1, Title = "welcome to chatter", Body = "yk u can just chat", UserId = 1 });
+        posts.Add(new Post { Id = 2, Title = "hii", Body = "puszi", UserId = 2 });
+        posts.Add(new Post { Id = 3, Title = "least favorite C# features", Body = "hi Allan", UserId = 3 });
+    }
+
     public Task<Post> AddAsync(Post post)
     {
         post.Id = posts.Any()
@@ -22,7 +29,7 @@ public class PostInMemoryRepository : IPostRepository
         if (existingPost is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{post.Id}' not found");
+                $"post with ID '{post.Id}' not found :((");
         }
 
         posts.Remove(existingPost);
@@ -37,7 +44,7 @@ public class PostInMemoryRepository : IPostRepository
         if (postToRemove is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found");
+                $"post with ID '{id}' not found :((");
         }
 
         posts.Remove(postToRemove);
@@ -50,7 +57,7 @@ public class PostInMemoryRepository : IPostRepository
         if (post is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found");
+                $"post with ID '{id}' not found :((");
         }
 
         return Task.FromResult(post);

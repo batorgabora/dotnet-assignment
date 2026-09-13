@@ -7,6 +7,13 @@ public class UserInMemoryRepository : IUserRepository
 {
     private readonly List<User> users = new List<User>();
 
+    public UserInMemoryRepository()
+    {
+        users.Add(new User { Id = 1, UserName = "picasso", Password = "password1" });
+        users.Add(new User { Id = 2, UserName = "monet", Password = "password2" });
+        users.Add(new User { Id = 3, UserName = "magritte", Password = "password3" });
+    }
+
     public Task<User> AddAsync(User user)
     {
         user.Id = users.Any()
@@ -22,7 +29,7 @@ public class UserInMemoryRepository : IUserRepository
         if (existingUser is null)
         {
             throw new InvalidOperationException(
-                $"User with ID '{user.Id}' not found");
+                $"user with ID '{user.Id}' not found  :|");
         }
 
         users.Remove(existingUser);
@@ -37,7 +44,7 @@ public class UserInMemoryRepository : IUserRepository
         if (userToRemove is null)
         {
             throw new InvalidOperationException(
-                $"User with ID '{id}' not found");
+                $"user with ID '{id}' not found  :|");
         }
 
         users.Remove(userToRemove);
@@ -50,7 +57,7 @@ public class UserInMemoryRepository : IUserRepository
         if (user is null)
         {
             throw new InvalidOperationException(
-                $"User with ID '{id}' not found");
+                $"user with ID '{id}' not found  :|");
         }
 
         return Task.FromResult(user);

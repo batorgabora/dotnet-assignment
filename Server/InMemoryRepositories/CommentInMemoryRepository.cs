@@ -7,6 +7,13 @@ public class CommentInMemoryRepository : ICommentRepository
 {
     private readonly List<Comment> comments = new List<Comment>();
 
+    public CommentInMemoryRepository()
+    {
+        comments.Add(new Comment { Id = 1, Body = "tight!", PostId = 1, UserId = 2 });
+        comments.Add(new Comment { Id = 2, Body = "yooo!", PostId = 1, UserId = 3 });
+        comments.Add(new Comment { Id = 3, Body = "hope you're doing fine", PostId = 3, UserId = 1 });
+    }
+
     public Task<Comment> AddAsync(Comment comment)
     {
         comment.Id = comments.Any()
@@ -22,7 +29,7 @@ public class CommentInMemoryRepository : ICommentRepository
         if (existingComment is null)
         {
             throw new InvalidOperationException(
-                $"Comment with ID '{comment.Id}' not found");
+                $"comment with ID '{comment.Id}' not found  :‹");
         }
 
         comments.Remove(existingComment);
@@ -37,7 +44,7 @@ public class CommentInMemoryRepository : ICommentRepository
         if (commentToRemove is null)
         {
             throw new InvalidOperationException(
-                $"Comment with ID '{id}' not found");
+                $"comment with ID '{id}' not found  :‹");
         }
 
         comments.Remove(commentToRemove);
@@ -50,7 +57,7 @@ public class CommentInMemoryRepository : ICommentRepository
         if (comment is null)
         {
             throw new InvalidOperationException(
-                $"Comment with ID '{id}' not found");
+                $"comment with ID '{id}' not found  :‹");
         }
 
         return Task.FromResult(comment);
