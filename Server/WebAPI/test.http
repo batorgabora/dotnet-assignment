@@ -1,0 +1,104 @@
+@host = https://localhost:5146
+
+### USERS
+GET {{host}}/users
+
+###
+GET {{host}}/users/1
+
+### filter by name
+GET {{host}}/users?userNameContains=mo
+
+### create
+POST {{host}}/users
+Content-Type: application/json
+
+{ "userName": "dali", "password": "pw" }
+
+### update
+PUT {{host}}/users/4
+Content-Type: application/json
+
+{ "userName": "dali2", "password": "pw" }
+
+### delete
+DELETE {{host}}/users/4
+
+### POSTS
+GET {{host}}/posts
+
+### filters
+GET {{host}}/posts?titleContains=one
+###
+GET {{host}}/posts?userId=1
+###
+GET {{host}}/posts?userName=monet
+###
+GET {{host}}/posts?top=2
+
+### single, with and without comments
+GET {{host}}/posts/1
+###
+GET {{host}}/posts/1?includeComments=true
+
+### nested route
+GET {{host}}/posts/1/comments
+
+### create / update / delete
+POST {{host}}/posts
+Content-Type: application/json
+
+{ "title": "new post", "body": "hello", "userId": 1 }
+
+###
+PUT {{host}}/posts/4
+Content-Type: application/json
+
+{ "title": "edited", "body": "edited body" }
+
+###
+DELETE {{host}}/posts/4
+
+### COMMENTS
+GET {{host}}/comments
+###
+GET {{host}}/comments?postId=1
+###
+GET {{host}}/comments?userId=2
+###
+GET {{host}}/comments?userName=magritte
+
+###
+POST {{host}}/comments
+Content-Type: application/json
+
+{ "body": "nice", "postId": 1, "userId": 3 }
+
+###
+PUT {{host}}/comments/4
+Content-Type: application/json
+
+{ "body": "edited" }
+
+###
+DELETE {{host}}/comments/4
+
+### ERROR CASES
+# expect 404
+GET {{host}}/users/999
+###
+# expect 404
+GET {{host}}/posts/999
+###
+# expect 400 (username taken)
+POST {{host}}/users
+Content-Type: application/json
+
+{ "userName": "picasso", "password": "pw" }
+
+###
+# expect 404 (user doesn't exist)
+POST {{host}}/posts
+Content-Type: application/json
+
+{ "title": "x", "body": "y", "userId": 999 }
