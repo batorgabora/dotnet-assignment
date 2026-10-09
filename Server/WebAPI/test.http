@@ -1,4 +1,4 @@
-@host = https://localhost:5146
+@host = http://localhost:5146
 
 ### USERS
 GET {{host}}/users
