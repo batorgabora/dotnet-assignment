@@ -1,0 +1,73 @@
+﻿@using Blazor_App.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject SimpleAuthProvider AuthProvider
+@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">posta.</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="home">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> 
+                home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="posts">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> 
+                posts
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="create-post">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> 
+                create post
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="add-user">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> 
+                add user
+            </NavLink>
+        </div>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3 logged-in-as">
+                    logged in as <strong>@context.User.Identity?.Name</strong>
+                </div>
+                <div class="nav-item px-3">
+                    <button class="nav-link btn btn-link" style="text-align: left; width: 100%;" @onclick="Logout">
+                        log out
+                    </button>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        log in
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </nav>
+</div>
+
+@code {
+    private void Logout()
+    {
+        AuthProvider.Logout();
+        NavigationManager.NavigateTo("/login");
+    }
+}
