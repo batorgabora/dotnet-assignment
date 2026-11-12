@@ -1,0 +1,54 @@
+@page "/create-post"
+@using ApiContracts
+@using Blazor_App.Services
+@inject IPostService PostService
+@inject SimpleAuthProvider AuthProvider
+@inject NavigationManager NavigationManager
+
+<h3>create new post</h3>
+
+<label>title:</label>
+<input type="text" @bind="title" />
+
+<label>body:</label>
+<textarea @bind="body"></textarea>
+
+<button @onclick="CreatePostAsync">create post</button>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+
+@code {
+    private string title = "";
+    private string body = "";
+    private string? errorMessage;
+
+    private async Task CreatePostAsync()
+    {
+        errorMessage = null;
+        int? userId = AuthProvider.GetCurrentUserId();
+        if (userId is null)
+        {
+            errorMessage = "you need to log in first";
+            return;
+        }
+
+        try
+        {
+            CreatePostDto request = new()
+            {
+                Title = title,
+                Body = body,
+                UserId = userId.Value
+            };
+            await PostService.AddPostAsync(request);
+            NavigationManager.NavigateTo("/posts");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+}

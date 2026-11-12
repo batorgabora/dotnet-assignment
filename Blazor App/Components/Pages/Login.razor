@@ -1,0 +1,40 @@
+@page "/"
+@page "/login"
+@using Blazor_App.Services
+@inject SimpleAuthProvider AuthProvider
+@inject NavigationManager NavigationManager
+
+<h3>log in</h3>
+
+<label>username:</label>
+<input type="text" @bind="userName" />
+
+<label>password:</label>
+<input type="password" @bind="password" />
+
+<button @onclick="LoginAsync">log in</button>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+
+@code {
+    private string userName = "";
+    private string password = "";
+    private string? errorMessage;
+
+    private async Task LoginAsync()
+    {
+        errorMessage = null;
+        bool success = await AuthProvider.LoginAsync(userName, password);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/posts");
+        }
+        else
+        {
+            errorMessage = "invalid username or password";
+        }
+    }
+}

@@ -1,0 +1,101 @@
+@page "/posts/{PostId:int}"
+@using ApiContracts
+@using Blazor_App.Services
+@inject IPostService PostService
+@inject ICommentService CommentService
+@inject SimpleAuthProvider AuthProvider
+
+<h3>@(post?.Title)</h3>
+
+@if (errorMessage != null)
+{
+    <p style="color: red">@errorMessage</p>
+}
+else if (post == null)
+{
+    <p>loading...</p>
+}
+else
+{
+    <p>@post.Body</p>
+    <p><em>by @post.AuthorUserName</em></p>
+
+    <h4>comments</h4>
+    @if (post.Comments == null || post.Comments.Count == 0)
+    {
+        <p>no comments yet.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var comment in post.Comments)
+            {
+                <li>@comment.AuthorUserName: @comment.Body</li>
+            }
+        </ul>
+    }
+
+    <h4>add a comment</h4>
+    <textarea @bind="newCommentBody"></textarea>
+    <button @onclick="AddCommentAsync">add comment</button>
+
+    @if (!string.IsNullOrEmpty(commentErrorMessage))
+    {
+        <p style="color: red">@commentErrorMessage</p>
+    }
+}
+
+@code {
+    [Parameter]
+    public int PostId { get; set; }
+
+    private PostDto? post;
+    private string? errorMessage;
+    private string newCommentBody = "";
+    private string? commentErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPostAsync();
+    }
+
+    private async Task LoadPostAsync()
+    {
+        try
+        {
+            post = await PostService.GetPostAsync(PostId, includeComments: true);
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+
+    private async Task AddCommentAsync()
+    {
+        commentErrorMessage = null;
+        int? userId = AuthProvider.GetCurrentUserId();
+        if (userId is null)
+        {
+            commentErrorMessage = "you need to log in first";
+            return;
+        }
+
+        try
+        {
+            CreateCommentDto request = new()
+            {
+                Body = newCommentBody,
+                PostId = PostId,
+                UserId = userId.Value
+            };
+            await CommentService.AddCommentAsync(request);
+            newCommentBody = "";
+            await LoadPostAsync();
+        }
+        catch (Exception e)
+        {
+            commentErrorMessage = e.Message;
+        }
+    }
+}

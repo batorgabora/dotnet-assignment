@@ -1,0 +1,50 @@
+@page "/posts"
+@using ApiContracts
+@using Blazor_App.Services
+@inject IPostService PostService
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h3>all posts</h3>
+    <a href="/create-post">create new post</a>
+</div>
+
+@if (errorMessage != null)
+{
+    <p style="color: red">@errorMessage</p>
+}
+else if (posts == null)
+{
+    <p>loading...</p>
+}
+else if (posts.Count == 0)
+{
+    <p>no posts yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var post in posts)
+        {
+            <li>
+                <a href="/posts/@post.Id">@post.Title</a> by @post.AuthorUserName
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<PostDto>? posts;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            posts = await PostService.GetPostsAsync();
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+}
